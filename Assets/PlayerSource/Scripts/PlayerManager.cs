@@ -1,41 +1,26 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
-public class PlayerManager : MonoBehaviour, ISaveable // NEED TO ADD "ISAVEABLE" INTERFACE
+public class PlayerManager : MonoBehaviour
 {
-    // I have created player in here
-    //public Player newPlayer = new Player("Mikey", 2, true);
-    
-    public string playerName;
-    public int playerLevel;
-    public bool playerIsSelectable;
+    public MyClass myClass = new MyClass();
 
-    public void LoadData(object data)
+    string saveFilePath;
+    void Awake()
     {
-        var playerSaveData = (PlayerSaveData)data;
-
-        playerName = playerSaveData.playerName;
-        playerLevel = playerSaveData.playerLevel;
-        playerIsSelectable = playerSaveData.playerIsSelectable;
+        saveFilePath = $"{Application.persistentDataPath}/savesadsadata.json";
     }
 
-    public object SaveData()
+    [ContextMenu("Save")]
+    public void SavePlayerData()
     {
-        return new PlayerSaveData
-        {
-            playerName = playerName,
-            playerLevel = playerLevel,
-            playerIsSelectable = playerIsSelectable
-        };
-    }
-}
+        string saveDataString = JsonUtility.ToJson(myClass);
 
-// You need to create a struct to declare what data you want to save
-[SerializeField]
-public struct PlayerSaveData
-{
-    public string playerName;
-    public int playerLevel;
-    public bool playerIsSelectable;
+        File.WriteAllText(saveFilePath, saveDataString);
+
+        Debug.Log(saveFilePath);
+    }
 }
